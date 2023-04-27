@@ -1,1 +1,0 @@
-BOT_API_KEY='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'
