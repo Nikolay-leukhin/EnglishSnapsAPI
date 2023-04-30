@@ -1,8 +1,15 @@
 from fastapi import APIRouter
+from ..schemas.user import ModelAddUser
+from src.database import query_add_user
+
 
 router = APIRouter()
 
 
-@router.post('/add_user')
-def request_add_user(name: str, email: str, profession: str):
-    return 'OKEY'
+@router.post('/user/add_user')
+async def request_add_user(request: ModelAddUser):
+    query_add_user(**request.__dict__)
+    return {
+        'code': 228,
+        'message': 'idk but no exceptions'
+    }
