@@ -1,68 +1,48 @@
+from ..ai_bot.bot_message_history import MessageHistory
+from ..ai_bot.bot_settings import BotSettings
+from ..ai_bot.bot_chooser_request import RequestChooser
+
 from typing import Dict
 
 import openai
-from .bot_config import BOT_API_KEY
 
 
 class BotAssistant:
-    __temp: float
-    __max_tokens: int
-    __bot_model = 'gpt-3.5-turbo'
-    __API_KEY: str
-    messages = [{
-        'role': 'system',
-        'content': ""
-    }]
-    # от этой штуки стоит избавиться. она бестолоква попробуй реализвать на отдельном классе будто бы базе данных
-    # настройки и общее стоит вынести в отдельный класс и уже от него наследовать общий класс обработки и прочего,
-    # а может сделать и как то по-другому
+    def __init__(self, last_request: dict, setting: BotSettings = BotSettings()) -> None:
+        self.settings = setting
+        self.messages = MessageHistory(last_request).history
+        self.last_request = last_request
 
-    def __init__(self, api_key=BOT_API_KEY,
-                 bot_temperature=0.5,
-                 max_tokens=100,
-                 started_role='You help learn English to everyone'
-                 ) -> None:
 
-        self.__API_KEY = api_key
-        self.__temp = bot_temperature
-        self.__max_tokens = max_tokens
-        self.messages[0]['content'] = started_role
+    def make_bot_request(self):
+        self.messages.append(self.__handle_user_prompt())
+        return self.__process_bot_response()
 
-        openai.api_key = self.__API_KEY
-
-    def make_bot_request(self, user_text) -> str:
-        user_prompt = self.__handle_user_prompt(user_text)
-        self.messages.append(user_prompt)
-
-        bot_answer = self.__process_bot_response()
-        self.messages.append(bot_answer)
-
-        return bot_answer.get('content')
-
-    def __handle_user_prompt(self, text: str) -> Dict[str, str]:
+    def __handle_user_prompt(self) -> Dict[str, str]:
         message_model = {
             'role': 'user',
-            'content': text
+            'content': self.last_request.get('message_text')
         }
         return message_model
 
-    def __process_bot_response(self) -> Dict[str, str]:
+    def __process_bot_response(self) -> Dict:
         if self.messages[-1].get('role') != 'user':
             raise ValueError("No user prompt found. You should add a user prompt first.")
 
         try:
             bot_response = openai.ChatCompletion.create(
-                model=self.__bot_model,
+                model=self.settings.get_bot_model(),
                 messages=self.messages,
-                temperature=self.__temp,
-                max_tokens=self.__max_tokens
+                temperature=self.settings.get_temperature(),
+                max_tokens=self.settings.get_max_tokens()
             )
-            return {
-                'role': 'assistant',
-                'content': self.format_bot_response(bot_response)
+            response: dict = {
+                'user_id': self.last_request.get('user_id'),
+                'session_id': self.last_request.get('session_id'),
+                'message_order': self.last_request.get('message_order') + 1,
+                'message_text': RequestChooser.get_response(bot_response),
+                'is_bot': True,
             }
+            return response
         except openai.error.APIError as ex:
             raise ValueError(f"Error occurred while processing the bot response: {ex}")
-
-    def format_bot_response(self, response):
-        return response.get('choices')[0].get('message').get('content')

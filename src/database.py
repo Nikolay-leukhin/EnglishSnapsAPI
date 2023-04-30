@@ -40,6 +40,15 @@ def query_add_message(**request):
         session.commit()
 
 
+def query_get_latest_msgs(quantity: int, user: int, session_num: int):
+    with SQLSession() as session:
+        results = session.query(Messages).filter_by(
+            user_id=user,
+            session_id=session_num
+        ).order_by(Messages.message_order).limit(quantity).all()
+        return results
+
+
 # спокойноно можно брать обычные сессии не асинхронные
 # TODO: о боте. в комит на базу стоит собирать сразу два сообщения от ЮЗЕРА и от БОТА. это ускорит процесс а функция которая делала это возвращала сам респонс бота
 # TODO: как вариант можно  бать лишь последние 4 или 6 сообщений между ботом и ползователем как история сообщений для большей производительности

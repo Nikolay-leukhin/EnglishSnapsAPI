@@ -9,4 +9,3 @@ router = APIRouter()
 async def add_session(request: ModelSessionSend):
     query_add_session(**request.__dict__)
     return {'code': 222, 'msg': 'ok'}
-

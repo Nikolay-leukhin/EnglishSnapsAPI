@@ -1,15 +1,6 @@
 from pydantic import BaseModel
 
 
-# messages models
-class ModelMessageSend(BaseModel):
-    user_id: int
-    session_id: int
-    message_order: int
-    message_text: str
-    is_bot: bool
-
-
 # user models
 class ModelAddUser(BaseModel):
     nickname: str
