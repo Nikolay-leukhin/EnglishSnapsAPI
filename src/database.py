@@ -1,14 +1,16 @@
 from src.config import *
-from src.models import Users, Sessions, Messages
+from src.models import Users, Sessions, Messages, Base
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+
 
 try:
     DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PWD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     engine = create_engine(DB_URL)
 except Exception as ex:
     raise ex
+
 
 SQLSession = sessionmaker(bind=engine)
 
@@ -47,6 +49,21 @@ def query_get_latest_msgs(quantity: int, user: int, session_num: int):
             session_id=session_num
         ).order_by(Messages.message_order).limit(quantity).all()
         return results
+
+
+def query_get_all_user_sessions(user_id: int):
+    with SQLSession() as session:
+        results = session.query(Sessions).join(Messages).filter(Messages.user_id == user_id).all()
+        return results
+
+
+def query_is_user_exist(email: str, password: str) -> bool:
+    with SQLSession() as session:
+        user = session.query(Users).filter_by(
+            email=email,
+            password=password
+        ).all()
+    return bool(user)
 
 
 # спокойноно можно брать обычные сессии не асинхронные

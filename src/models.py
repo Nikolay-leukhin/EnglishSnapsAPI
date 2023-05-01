@@ -30,6 +30,7 @@ class Sessions(Base):
     __tablename__ = 'sessions'
     id: int = Column(Integer, primary_key=True)
     session_name: str = Column(String, nullable=False)
+    is_ended: bool = Column(Boolean, nullable=False, default=False)
     created_at: datetime = Column(DateTime(), default=datetime.now)
 
 
