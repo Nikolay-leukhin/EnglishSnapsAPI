@@ -8,11 +8,13 @@ from sqlalchemy.orm import sessionmaker
 try:
     DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PWD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     engine = create_engine(DB_URL)
+    print('connection secces')
 except Exception as ex:
     raise ex
 
 
 SQLSession = sessionmaker(bind=engine)
+Base.metadata.create_all(engine) # ПОСЛЕ КЛОНА ЗАПУСТИ И УДАЛИ
 
 
 def get_users():
