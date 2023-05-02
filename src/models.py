@@ -41,7 +41,7 @@ class Messages(Base):
     session_id = Column(Integer, ForeignKey('sessions.id'))
     message_order: int = Column(Integer, nullable=False)
     message_text: str = Column(String, nullable=False)
-    is_bot: bool = Column(Boolean, nullable=False)
+    sender: str = Column(String, nullable=False)
 
     rel_users = relationship('Users', backref='messages')
     rel_sessions = relationship('Sessions', backref='messages')

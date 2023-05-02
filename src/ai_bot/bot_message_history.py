@@ -3,7 +3,6 @@ from ..database import query_get_latest_msgs
 
 class MessageHistory:
     """class that recieving message history"""
-    # TODO добавить поиск последних 5-ти сообщений юзера в в данной сессии
 
     def __init__(self, latest_msg: dict, quantity: int = 5):
         self.cur_user = latest_msg.get('user_id')
@@ -22,7 +21,7 @@ class MessageHistory:
         sorted_history = []
         for item in raw_history:
             sorted_item = {
-                'role': 'user' if not item.is_bot else 'assistant',
+                'role': item.sender,
                 'content': item.message_text
             }
             sorted_history.append(sorted_item)

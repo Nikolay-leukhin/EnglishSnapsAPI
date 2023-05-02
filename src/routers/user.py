@@ -19,4 +19,4 @@ async def request_add_user(request: ModelAddUser):
 async def is_user_exist(email: str, password: str):
     """returns bool type: does user exist or not?"""
     user_exists = query_is_user_exist(email=email, password=password)
-    return {'is_exist': user_exists}
+    return user_exists

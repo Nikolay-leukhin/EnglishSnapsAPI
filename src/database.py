@@ -33,6 +33,8 @@ def query_add_session(**request):
         session_to_add = Sessions(**request)
         session.add(session_to_add)
         session.commit()
+        session.refresh(session_to_add)
+        return session_to_add
 
 
 def query_add_message(**request):
@@ -57,18 +59,22 @@ def query_get_all_user_sessions(user_id: int):
         return results
 
 
-def query_is_user_exist(email: str, password: str) -> bool:
+def query_is_user_exist(email: str, password: str):
     with SQLSession() as session:
         user = session.query(Users).filter_by(
             email=email,
             password=password
-        ).all()
-    return bool(user)
+        ).first()
+    return {
+        'user_id': user.id if bool(user) else None,
+        'is_exist': bool(user),
+    }
 
 
-# спокойноно можно брать обычные сессии не асинхронные
-# TODO: о боте. в комит на базу стоит собирать сразу два сообщения от ЮЗЕРА и от БОТА. это ускорит процесс а функция которая делала это возвращала сам респонс бота
-# TODO: как вариант можно  бать лишь последние 4 или 6 сообщений между ботом и ползователем как история сообщений для большей производительности
-# TODO: интересно было бы реализовать систему, лайков и дизлайков на сообщение. чтобы потом ИСХОДЯ ОТ ИНТЕРЕСОВ ПОЛЬЗОВАТЕЛЯ  задать некоторый ситемный параметр
-# TODO: можно юзать без редиски
-# TODO: в обьекте message стоит хранить не время а порядок сообщения ауф
+def query_get_english_level(user_id: int):
+    with SQLSession() as session:
+        result = session.query(Users.english_level).filter_by(
+            id=user_id
+        ).first()
+        return str(result)
+

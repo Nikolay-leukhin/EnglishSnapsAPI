@@ -1,4 +1,11 @@
 from pydantic import BaseModel
+from enum import Enum
+
+
+class BotRoles(str, Enum):
+    assistant = 'assistant'
+    user = 'user'
+    system = 'system'
 
 
 class ModelMessageSend(BaseModel):
@@ -6,4 +13,7 @@ class ModelMessageSend(BaseModel):
     session_id: int
     message_order: int
     message_text: str
-    is_bot: bool = False
+    sender: BotRoles = BotRoles.user
+
+
+

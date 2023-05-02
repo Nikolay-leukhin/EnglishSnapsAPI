@@ -6,6 +6,8 @@ from typing import Dict
 
 import openai
 
+from ..schemas.message import BotRoles
+
 
 class BotAssistant:
     def __init__(self, last_request: dict, setting: BotSettings = BotSettings()) -> None:
@@ -41,7 +43,7 @@ class BotAssistant:
                 'session_id': self.last_request.get('session_id'),
                 'message_order': self.last_request.get('message_order') + 1,
                 'message_text': RequestChooser.get_response(bot_response),
-                'is_bot': True,
+                'sender': BotRoles.assistant,
             }
             return response
         except openai.error.APIError as ex:
