@@ -14,7 +14,6 @@ except Exception as ex:
 
 
 SQLSession = sessionmaker(bind=engine)
-Base.metadata.create_all(engine) # ПОСЛЕ КЛОНА ЗАПУСТИ И УДАЛИ
 
 
 def get_users():
