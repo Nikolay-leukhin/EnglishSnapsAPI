@@ -47,9 +47,9 @@ def query_add_message(**request):
         session.commit()
 
 
-def query_get_latest_msgs(quantity: int, user: int, session_num: int):
+def query_get_latest_msgs(quantity, user: int, session_num: int):
     with SQLSession() as session:
-        results = session.query(Messages).filter_by(
+        results = session.query(Messages).where(Messages.sender != 'system').filter_by(
             user_id=user,
             session_id=session_num
         ).order_by(Messages.message_order).limit(quantity).all()
