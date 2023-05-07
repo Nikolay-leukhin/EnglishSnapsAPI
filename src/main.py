@@ -10,7 +10,7 @@ app.include_router(msg_router)
 
 
 
-@app.get('/info')
+@app.get('/')
 async def get_info():
-    return "a FastApi based application for you eng practise"
+    return "ping succes"
 

@@ -15,7 +15,7 @@ class Users(Base):
     password: str = Column(String, nullable=False)
     avatar_path: str = Column(String(20), nullable=True)
     email: str = Column(String, nullable=False)
-    phone: str = Column(String(20), nullable=False)
+    phone: str = Column(String(20), nullable=True)
     vk_contact: str = Column(String, nullable=True)
     tg_contact: str = Column(String, nullable=True)
     longitude: str = Column(String)

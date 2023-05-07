@@ -16,7 +16,7 @@ async def add_message(request: ModelMessageSend):
     return bot_response
 
 
-@router.get('/message/get_messages/{user_id}&{session_id}&{quantity}')
+@router.get('/message/get_messages')
 async def get_latest_messages(quantity: int, user_id: int, session_id: int):
     response = query_get_latest_msgs(quantity, user_id, session_id)
     return response

@@ -11,8 +11,6 @@ router = APIRouter()
 
 @router.post('/session/add_session')
 async def add_session(request: ModelSessionSend):
-    # TODO при добавлении сессии нужно отправлять message от system  с названием фв
-    # TODO с названием сесии как некотопрый заголовок темы
     user_id: int = request.__dict__.pop('user_id')
     user_english_level = query_get_english_level(user_id=user_id)
     response_add_session = query_add_session(**request.__dict__)
@@ -20,7 +18,7 @@ async def add_session(request: ModelSessionSend):
         user_id=user_id,
         session_id=response_add_session.id,
         message_order=0,
-        message_text=f'you helps to learn english. current theme of dialog is {response_add_session.session_name}. user english level A1',
+        message_text=f'you helps to learn english. current theme of dialog is {response_add_session.session_name}. user english level {user_english_level}',
         sender=BotRoles.system,
     )
     query_add_message(**system_msg.__dict__)
@@ -30,7 +28,7 @@ async def add_session(request: ModelSessionSend):
     }
 
 
-@router.get('/session/user_session/{user_id}')
-async def get_session(user_id: int):
+@router.get('/session/user_session')
+async def get_sessions(user_id: int):
     response = query_get_all_user_sessions(user_id)
     return response

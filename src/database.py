@@ -27,6 +27,8 @@ def query_add_user(**request):
         user_to_add = Users(**request)
         session.add(user_to_add)
         session.commit()
+        session.refresh(user_to_add)
+        return user_to_add
 
 
 def query_add_session(**request):
@@ -67,8 +69,8 @@ def query_is_user_exist(email: str, password: str):
             password=password
         ).first()
     return {
-        'user_id': user.id if bool(user) else None,
         'is_exist': bool(user),
+        'user': user
     }
 
 

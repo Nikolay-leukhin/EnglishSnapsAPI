@@ -7,7 +7,7 @@ class ModelAddUser(BaseModel):
     password: str
     avatar_path: str = None
     email: str
-    phone: str
+    phone: str = None
     vk_contact: str = None
     tg_contact: str = None
     longitude: str = None
