@@ -15,7 +15,6 @@ class BotAssistant:
         self.messages = MessageHistory(last_request).history
         self.last_request = last_request
 
-
     def make_bot_request(self):
         self.messages.append(self.__handle_user_prompt())
         return self.__process_bot_response()

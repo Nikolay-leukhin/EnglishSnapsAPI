@@ -4,7 +4,7 @@ import openai
 
 
 class BotSettings:
-    def __init__(self, temperature=0.5, max_tokens=100, bot_model='gpt-3.5-turbo', api_key=BOT_API_KEY):
+    def __init__(self, temperature=0.5, max_tokens=500, bot_model='gpt-3.5-turbo', api_key=BOT_API_KEY):
         self.__temperature = temperature
         self.__max_tokens = max_tokens
         self.__bot_model = bot_model
