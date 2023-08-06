@@ -62,7 +62,7 @@ class Word(Base):
 class Theme(Base):
     __tablename__ = 'theme'
 
-    id: int = Column(Integer, primary_key=True)
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
     theme_name: str = Column(String, nullable=False)
 
 

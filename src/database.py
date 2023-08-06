@@ -1,11 +1,12 @@
 from typing import List
 
 from src.config import *
-from src.models import Users, Sessions, Messages, Base, UserWord, Word
+from src.models import Users, Sessions, Messages, Base, UserWord, Word, Theme
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
+from src.schemas.theme import ThemeModel
 from src.schemas.word import WordModel
 
 try:
@@ -90,6 +91,9 @@ def query_get_theme_words(theme_id: int) -> List[WordModel]:
         raw_data = session.query(Word).filter_by(
             theme_id=theme_id
         ).all()
+        if len(raw_data) == 0:
+            return []
+
         data: list[WordModel] = [
             WordModel(
                 id=item.id,
@@ -102,3 +106,16 @@ def query_get_theme_words(theme_id: int) -> List[WordModel]:
         ]
         return data
 
+
+def query_add_theme(data: ThemeModel):
+    with SQLSession() as session:
+        try:
+            tables = Theme(
+                theme_name=data.theme_name
+            )
+            req = session.add(tables)
+            session.commit()
+            session.refresh(tables)
+        except Exception as ex:
+            return None
+        return tables
