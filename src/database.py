@@ -1,9 +1,10 @@
 from src.config import *
-from src.models import Users, Sessions, Messages, Base
+from src.models import Users, Sessions, Messages, Base, UserWord, Word
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
+from src.schemas.word import WordModel
 
 try:
     DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PWD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
@@ -80,4 +81,22 @@ def query_get_english_level(user_id: int):
             id=user_id
         ).first()
         return str(result)
+
+
+def query_get_theme_words(theme_id: int) -> list[WordModel]:
+    with SQLSession() as session:
+        raw_data = session.query(Word).filter_by(
+            theme_id=theme_id
+        ).all()
+        data: list[WordModel] = [
+            WordModel(
+                id=item.id,
+                name=item.name,
+                explanation=item.explanation,
+                translation=item.translation,
+                transcription=item.transcription,
+                theme_id=item.theme_id
+            ) for item in raw_data
+        ]
+        return data
 

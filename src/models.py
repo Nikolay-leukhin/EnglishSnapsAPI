@@ -45,3 +45,34 @@ class Messages(Base):
 
     rel_users = relationship('Users', backref='messages')
     rel_sessions = relationship('Sessions', backref='messages')
+
+
+class Word(Base):
+    __tablename__ = 'word'
+    id: int = Column(Integer, primary_key=True)
+    name: str = Column(String, nullable=False)
+    explanation: str = Column(String, nullable=False)
+    translation: str = Column(String, nullable=False)
+    transcription: str = Column(String, nullable=False)
+    theme_id: int = Column(Integer, ForeignKey('theme.id'))
+
+    res_theme = relationship('Theme', backref='word')
+
+
+class Theme(Base):
+    __tablename__ = 'theme'
+
+    id: int = Column(Integer, primary_key=True)
+    theme_name: str = Column(String, nullable=False)
+
+
+class UserWord(Base):
+    __tablename__ = 'users_words'
+
+    id: int = Column(Integer, primary_key=True)
+    user_id: int = Column(Integer, ForeignKey('users.id'))
+    word_id: int = Column(Integer, ForeignKey('word.id'))
+    is_learned: bool = Column(Boolean, nullable=False)
+
+    rel_users = relationship('Users', backref='users_words')
+    rel_word = relationship('Word', backref='users_words')
