@@ -1,3 +1,5 @@
+from typing import List
+
 from src.config import *
 from src.models import Users, Sessions, Messages, Base, UserWord, Word
 
@@ -83,7 +85,7 @@ def query_get_english_level(user_id: int):
         return str(result)
 
 
-def query_get_theme_words(theme_id: int) -> list[WordModel]:
+def query_get_theme_words(theme_id: int) -> List[WordModel]:
     with SQLSession() as session:
         raw_data = session.query(Word).filter_by(
             theme_id=theme_id
