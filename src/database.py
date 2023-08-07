@@ -6,7 +6,7 @@ from src.models import Users, Sessions, Messages, Base, UserWord, Word, Theme
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from src.schemas.theme import ThemeModel
+from src.schemas.theme import AddThemeModel, GetThemeModel
 from src.schemas.word import WordModel
 
 try:
@@ -107,7 +107,7 @@ def query_get_theme_words(theme_id: int) -> List[WordModel]:
         return data
 
 
-def query_add_theme(data: ThemeModel):
+def query_add_theme(data: AddThemeModel):
     with SQLSession() as session:
         try:
             tables = Theme(
@@ -118,4 +118,32 @@ def query_add_theme(data: ThemeModel):
             session.refresh(tables)
         except Exception as ex:
             return None
+        return tables
+
+
+def query_get_themes():
+    with SQLSession() as  session:
+        try:
+            raw_data = session.query(Theme).all()
+            data = [
+                GetThemeModel(
+                    id=item.id,
+                    theme_name=item.theme_name
+                ) for item in raw_data
+            ]
+            return data
+        except Exception as ex:
+            return None
+
+
+def query_add_word(word: WordModel):
+    with SQLSession() as session:
+        try:
+            tables = Word(**word.__dict__)
+            session.add(tables)
+            session.commit()
+            session.refresh(tables)
+        except Exception as ex:
+            return None
+
         return tables
