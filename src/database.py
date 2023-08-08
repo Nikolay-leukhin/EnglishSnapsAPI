@@ -144,6 +144,6 @@ def query_add_word(word: WordModel):
             session.commit()
             session.refresh(tables)
         except Exception as ex:
-            return None
+            return ex
 
         return tables

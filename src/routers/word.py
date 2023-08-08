@@ -9,10 +9,11 @@ router = APIRouter()
 @router.post('/words')
 async def add_new_word(word: WordModel):
     resp = query_add_word(word)
-    if resp is None:
+    if isinstance(resp, Exception):
         return {
             'code': 500,
-            'message': 'Something went wrong!('
+            'message': 'Something went wrong!(',
+            'exception': resp
         }
 
     return {
