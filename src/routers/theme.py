@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import APIRouter
 
-from src.database import query_get_theme_words, query_add_theme, query_get_themes
+from src.database import query_get_theme_words, query_add_theme, query_get_themes, query_add_word
 from src.schemas.theme import AddThemeModel
-from src.schemas.word import WordModel
+from src.schemas.word import GetWordModel
 
 router = APIRouter()
 
@@ -32,7 +32,7 @@ async def get_users_themes():
 
 @router.get('/themes/{theme_id}/words')
 async def get_theme_words(theme_id: int):
-    words: List[WordModel] = query_get_theme_words(theme_id)
+    words: List[GetWordModel] = query_get_theme_words(theme_id)
     if len(words) == 0:
         return {
             'status': 400,
