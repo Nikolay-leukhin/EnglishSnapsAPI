@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from src.schemas.theme import AddThemeModel, GetThemeModel
-from src.schemas.word import AddWordModel, GetWordModel
+from src.schemas.word import WordModel
 
 try:
     DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PWD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
@@ -86,7 +86,7 @@ def query_get_english_level(user_id: int):
         return str(result)
 
 
-def query_get_theme_words(theme_id: int) -> List[GetWordModel]:
+def query_get_theme_words(theme_id: int) -> List[WordModel]:
     with SQLSession() as session:
         raw_data = session.query(Word).filter_by(
             theme_id=theme_id
@@ -94,8 +94,8 @@ def query_get_theme_words(theme_id: int) -> List[GetWordModel]:
         if len(raw_data) == 0:
             return []
 
-        data: list[GetWordModel] = [
-            GetWordModel(
+        data: list[WordModel] = [
+            WordModel(
                 id=item.id,
                 name=item.name,
                 explanation=item.explanation,
@@ -136,7 +136,7 @@ def query_get_themes():
             return None
 
 
-def query_add_word(word: AddWordModel):
+def query_add_word(word: WordModel):
     with SQLSession() as session:
         try:
             tables = Word(**word.__dict__)
@@ -144,6 +144,6 @@ def query_add_word(word: AddWordModel):
             session.commit()
             session.refresh(tables)
         except Exception as ex:
-            return ex
+            return None
 
         return tables
